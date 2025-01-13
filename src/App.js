@@ -8,6 +8,7 @@ import BloodTestReport from './pages/BloodTestReport';
 import MRIReport from './pages/MRIReport';
 
 const App = () => {
+  
   return (
     <Router>
       <Navbar />
