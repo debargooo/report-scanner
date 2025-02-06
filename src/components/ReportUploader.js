@@ -44,27 +44,28 @@ const ReportUploader = () => {
           </button>
         </div>
 
-        {/* MRI Section */}
-        <div className="flex-1 min-w-[300px] max-w-sm bg-white shadow-md rounded-lg p-6">
-          <img src={mriIcon} alt="MRI" className="w-[20rem] h-[20rem] mx-auto mb-4 object-cover" />
-          <h2 className="text-2xl font-bold text-blue-600 mb-2 text-center">MRI</h2>
-          <p className="text-gray-600 text-center mb-4">Upload your MRI scan (Image only).</p>
-          <input
-            type="file"
-            accept="image/*"
-            onChange={(e) => handleFileChange(e, setMriImage)}
-            className="block w-full text-gray-700 border border-gray-300 rounded-md p-2 mb-4"
-          />
-          {mriImage && (
-            <p className="text-gray-700 text-center">Uploaded: {mriImage.name}</p>
-          )}
-          <button
-            className="bg-blue-600 text-white py-2 px-6 rounded hover:bg-blue-700 mt-4"
-            onClick={() => navigate('/mri-report', { state: { mriImagePath: mriImg } })} // Pass the imported image as a prop
-          >
-            Show Report
-          </button>
-        </div>
+ {/* MRI Section */}
+<div className="flex-1 min-w-[300px] max-w-sm bg-white shadow-md rounded-lg p-6">
+  <img src={mriIcon} alt="MRI" className="w-[20rem] h-[20rem] mx-auto mb-4 object-cover" />
+  <h2 className="text-2xl font-bold text-blue-600 mb-2 text-center">MRI</h2>
+  <p className="text-gray-600 text-center mb-4">Upload your MRI scan (Image only).</p>
+  <input
+    type="file"
+    accept="image/*"
+    onChange={(e) => handleFileChange(e, setMriImage)}
+    className="block w-full text-gray-700 border border-gray-300 rounded-md p-2 mb-4"
+  />
+  {mriImage && (
+    <p className="text-gray-700 text-center">Uploaded: {mriImage.name}</p>
+  )}
+  <button
+    className="bg-blue-600 text-white py-2 px-6 rounded hover:bg-blue-700 mt-4"
+    onClick={() => navigate('/mri-report', { state: { mriImage: mriImage } })} // Pass the image file as state
+  >
+    Show Report
+  </button>
+</div>
+
 
         {/* X-Ray Section */}
         <div className="flex-1 min-w-[300px] max-w-sm bg-white shadow-md rounded-lg p-6">
