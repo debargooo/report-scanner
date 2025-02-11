@@ -1,8 +1,10 @@
 import joblib
-
+import os
 def load_tumor_model():
     print("🔄 Loading tumor detection model...")
-    model = joblib.load("E:\\MedIntel\\report-scanner\\backend\\models\\tumor_detection.pkl")
+    base_dir = os.path.dirname(os.path.abspath(__file__)) 
+    model_path = os.path.join(base_dir,"tumor_detection.pkl")
+    model = joblib.load(model_path)
     print("✅ Model loaded successfully.")
     return model
 

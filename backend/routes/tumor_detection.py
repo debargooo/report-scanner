@@ -29,7 +29,7 @@ def get_tumor_data():
         print("🔍 Making prediction...")
         prediction = tumor_model.predict(processed_img)[0]  # Get prediction (0 or 1)
         
-        result = "Tumor Detected" if prediction == 1 else "No Tumor Detected"
+        result = "TUMOR DETECTED" if prediction == 1 else "NO TUMOR DETECTED"
         print(f"✅ Prediction result: {result}")
 
     except Exception as e:
@@ -37,7 +37,10 @@ def get_tumor_data():
         result = f"Error processing image: {str(e)}"
 
     # Remove saved image after processing
-    os.remove(image_path)
-    print("🗑️ Uploaded image deleted after processing.")
+    if os.path.exists(image_path):
+        os.remove(image_path)
+        print("🗑️ Uploaded image deleted after processing.")
+    else:
+        print("⚠️ Warning: File not found, skipping deletion!")
 
     return jsonify({"prediction": result})

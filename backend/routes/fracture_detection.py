@@ -38,7 +38,7 @@ def detect_fracture():
         prediction = results[0]['label']
         confidence = results[0]['score']
 
-        result_text = "fractured" if confidence >= 0.93 and prediction == "fractured" else "Not fractured"
+        result_text = "FRACTURED" if confidence >= 0.93 and prediction == "fractured" else "NOT FRACTURED"
         print(f"✅ Prediction: {result_text}")
 
     except Exception as e:
