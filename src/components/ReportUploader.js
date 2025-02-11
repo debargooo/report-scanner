@@ -15,6 +15,10 @@ const ReportUploader = () => {
   
   const [mriImage, setMriImage] = useState(null);
   const [xrayImage, setXrayImage] = useState(null);
+  const [skinImage, setSkinImage] = useState(null);
+  const [kidneyImage, setKidneyImage] = useState(null);
+  const [pneumoniaImage, setPneumoniaImage] = useState(null);
+  const [breastImage, setBreastImage] = useState(null);
 
   const navigate = useNavigate();
 
@@ -23,7 +27,7 @@ const ReportUploader = () => {
   };
 
   return (
-    <section className="py-20 bg-gray-50">
+    <section className="py-20">
       <h1 className="text-4xl font-bold text-center text-blue-600 mb-12">Upload Your Medical Reports</h1>
 
       {/* Flex Container for Sections */}
@@ -46,10 +50,10 @@ const ReportUploader = () => {
     <p className="text-gray-700 text-center">Uploaded: {mriImage.name}</p>
   )}
   <button
-    className="bg-blue-600 text-white py-2 px-6 rounded hover:bg-blue-700 mt-4"
+    className="bg-blue-600 text-white py-2 px-6 rounded hover:bg-blue-700 mt-4 flex m-auto"
     onClick={() => navigate('/mri-report', { state: { mriImage: mriImage } })} // Pass the image file as state
   >
-    Show Report
+    Diagonise
   </button>
 </div>
 
@@ -58,7 +62,7 @@ const ReportUploader = () => {
         <div className="flex-1 min-w-[300px] max-w-sm bg-white shadow-md rounded-lg p-6">
           <img src={radiologist_4} alt="X-Ray" className="w-[20rem] h-[20rem] mx-auto mb-4 object-cover" />
           <h2 className="text-2xl font-bold text-blue-600 mb-2 text-center">Bone Fracture</h2>
-          <p className="text-gray-600 text-center mb-4">Bone Fracture (Image only).</p>
+          <p className="text-gray-600 text-center mb-4">X-ray Plate (Image only).</p>
           <input
             type="file"
             accept="image/*"
@@ -69,50 +73,52 @@ const ReportUploader = () => {
             <p className="text-gray-700 text-center">Uploaded: {xrayImage.name}</p>
           )}
           <button
-            className="bg-blue-600 text-white py-2 px-6 rounded hover:bg-blue-700 mt-4"
-            onClick={() => navigate('/xray-report')}
+            className="bg-blue-600 text-white py-2 px-6 rounded hover:bg-blue-700 mt-4 flex m-auto"
+            onClick={() => navigate('/xray-report',{ state: { xrayImage: xrayImage } })}
           >
-            Show Report
+            Diagonise
           </button>
         </div>
 
         <div className="flex-1 min-w-[300px] max-w-sm bg-white shadow-md rounded-lg p-6">
           <img src={skinCancer} alt="X-Ray" className="w-[20rem] h-[20rem] mx-auto mb-4 object-cover" />
           <h2 className="text-2xl font-bold text-blue-600 mb-2 text-center">Skin Cancer</h2>
-          <p className="text-gray-600 text-center mb-4">Bone Fracture (Image only).</p>
+          <p className="text-gray-600 text-center mb-4">Affected Area (Image only).</p>
           <input
             type="file"
             accept="image/*"
+            onChange={(e) => handleFileChange(e, setSkinImage)}
             className="block w-full text-gray-700 border border-gray-300 rounded-md p-2 mb-4"
           />
-          {xrayImage && (
-            <p className="text-gray-700 text-center">Uploaded: {xrayImage.name}</p>
+          {skinImage && (
+            <p className="text-gray-700 text-center">Uploaded: {skinImage.name}</p>
           )}
           <button
-            className="bg-blue-600 text-white py-2 px-6 rounded hover:bg-blue-700 mt-4"
-            onClick={() => navigate('/skin-cancer')}
+            className="bg-blue-600 text-white py-2 px-6 rounded hover:bg-blue-700 mt-4 flex m-auto"
+            onClick={() => navigate('/skin-cancer',{ state: { skinImage: skinImage } })}
           >
-            Show Report
+            Diagonise
           </button>
         </div>
 
         <div className="flex-1 min-w-[300px] max-w-sm bg-white shadow-md rounded-lg p-6">
           <img src={pneumonia} alt="X-Ray" className="w-[20rem] h-[20rem] mx-auto mb-4 object-cover" />
           <h2 className="text-2xl font-bold text-blue-600 mb-2 text-center">Pneumonia</h2>
-          <p className="text-gray-600 text-center mb-4">Bone Fracture (Image only).</p>
+          <p className="text-gray-600 text-center mb-4">Chest X-ray (Image only).</p>
           <input
             type="file"
             accept="image/*"
+            onChange={(e) => handleFileChange(e, setPneumoniaImage)}
             className="block w-full text-gray-700 border border-gray-300 rounded-md p-2 mb-4"
           />
-          {xrayImage && (
-            <p className="text-gray-700 text-center">Uploaded: {xrayImage.name}</p>
+          {pneumoniaImage && (
+            <p className="text-gray-700 text-center">Uploaded: {pneumoniaImage.name}</p>
           )}
           <button
-            className="bg-blue-600 text-white py-2 px-6 rounded hover:bg-blue-700 mt-4"
-            onClick={() => navigate('/pneumonia')}
+            className="bg-blue-600 text-white py-2 px-6 rounded hover:bg-blue-700 mt-4 flex m-auto"
+            onClick={() => navigate('/pneumonia',{ state: { pneumoniaImage: pneumoniaImage } })}
           >
-            Show Report
+           Diagonise
           </button>
         </div>
         
@@ -124,36 +130,38 @@ const ReportUploader = () => {
           <input
             type="file"
             accept="image/*"
-            className="block w-full text-gray-700 border border-gray-300 rounded-md p-2 mb-4"
+            onChange={(e) => handleFileChange(e, setBreastImage)}
+            className="block w-full text-gray-700 border border-gray-300 rounded-md p-2 mb-4 flex m-auto"
           />
-          {xrayImage && (
-            <p className="text-gray-700 text-center">Uploaded: {xrayImage.name}</p>
+          {breastImage && (
+            <p className="text-gray-700 text-center">Uploaded: {breastImage.name}</p>
           )}
           <button
-            className="bg-blue-600 text-white py-2 px-6 rounded hover:bg-blue-700 mt-4"
-            onClick={() => navigate('/pneumonia')}
+            className="bg-blue-600 text-white py-2 px-6 rounded hover:bg-blue-700 mt-4 flex m-auto"
+            onClick={() => navigate('/breast-cancer-USG',{ state: { breastImage: breastImage } })}
           >
-            Show Report
+            Diagonise
           </button>
         </div>
 
         <div className="flex-1 min-w-[300px] max-w-sm bg-white shadow-md rounded-lg p-6">
           <img src={kidney} alt="X-Ray" className="w-[20rem] h-[20rem] mx-auto mb-4 object-cover" />
           <h2 className="text-2xl font-bold text-blue-600 mb-2 text-center">kidney MRI</h2>
-          <p className="text-gray-600 text-center mb-4">Breast Cancer (Image only).</p>
+          <p className="text-gray-600 text-center mb-4">KIDNEY MRI (Image only).</p>
           <input
             type="file"
             accept="image/*"
+            onChange={(e) => handleFileChange(e, setKidneyImage)}
             className="block w-full text-gray-700 border border-gray-300 rounded-md p-2 mb-4"
           />
-          {xrayImage && (
-            <p className="text-gray-700 text-center">Uploaded: {xrayImage.name}</p>
+          {kidneyImage && (
+            <p className="text-gray-700 text-center">Uploaded: {kidneyImage.name}</p>
           )}
           <button
-            className="bg-blue-600 text-white py-2 px-6 rounded hover:bg-blue-700 mt-4"
-            onClick={() => navigate('/pneumonia')}
+            className="bg-blue-600 text-white py-2 px-6 rounded hover:bg-blue-700 mt-4 flex m-auto"
+            onClick={() => navigate('/kidney-disease',{ state: { kidneyImage: kidneyImage } })}
           >
-            Show Report
+            Diagonise
           </button>
         </div>
       </div>

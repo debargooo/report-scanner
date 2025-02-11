@@ -2,13 +2,14 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useLocation } from "react-router-dom";
 
-const PneumoniaReport = () => {
-  const { state } = useLocation(); // Get the passed X-ray image
-  const [selectedFile, setSelectedFile] = useState(state?.pneumoniaImage || null);
+const FractureReport = () => {
+  const { state } = useLocation(); // Use the location state to get the passed image
+  const [selectedFile, setSelectedFile] = useState(state?.xrayImage || null);
   const [prediction, setPrediction] = useState("");
+  const [confidence, setConfidence] = useState(null);
   const [previewImage, setPreviewImage] = useState(null);
 
-  // Display preview of received image
+  // Display the preview of the received image
   useEffect(() => {
     if (selectedFile) {
       const reader = new FileReader();
@@ -19,7 +20,7 @@ const PneumoniaReport = () => {
     }
   }, [selectedFile]);
 
-  // Automatically upload image for prediction
+  // Automatically send image for prediction
   useEffect(() => {
     if (selectedFile) {
       handleUpload();
@@ -37,34 +38,35 @@ const PneumoniaReport = () => {
     formData.append("image", selectedFile);
 
     try {
-      console.log("📤 Uploading X-ray image to Flask API...");
-      const response = await axios.post("http://127.0.0.1:5000/api/pneumonia-detection", formData, {
+      console.log("📤 Uploading image to Flask API...");
+      const response = await axios.post("http://127.0.0.1:5000/api/fracture-detection", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
       console.log("✅ Response received:", response.data);
       setPrediction(response.data.prediction);
+      setConfidence(response.data.confidence);
     } catch (error) {
       console.error("❌ Error uploading image:", error);
       setPrediction("Error processing image.");
+      setConfidence(null);
     }
   };
 
   return (
     <section className="py-20 bg-gray-50">
       <h1 className="text-4xl font-bold text-center text-blue-600 mb-12">
-        Pneumonia Detection Report
+        Fracture Detection Report
       </h1>
 
       <div className="max-w-4xl mx-auto bg-white shadow-lg rounded-lg p-6">
-        {/* Display Uploaded X-ray Image */}
+        {/* Display Fracture Image */}
         <div className="mb-8 text-center">
           <h2 className="text-2xl font-bold text-blue-600 mb-4">Uploaded X-ray Image</h2>
           {previewImage && (
             <img
               src={previewImage}
-              alt="X-ray Image Preview"
+              alt="X-ray Preview"
               className="w-full max-w-[20rem] mx-auto mb-6 object-cover border rounded-md"
-              
             />
           )}
         </div>
@@ -75,10 +77,10 @@ const PneumoniaReport = () => {
             <h2 className="text-2xl font-bold text-blue-600 mb-4">Prediction Result</h2>
             <p
               className={`text-lg font-bold ${
-                prediction === "PNEUMONIA" ? "text-red-600" : "text-green-600"
+                prediction === "fractured" ? "text-red-600" : "text-green-600"
               }`}
             >
-              {prediction}
+              {prediction} {confidence !== null && `(${(confidence * 100).toFixed(2)}% accuracy)`}
             </p>
           </div>
         )}
@@ -87,4 +89,4 @@ const PneumoniaReport = () => {
   );
 };
 
-export default PneumoniaReport;
+export default FractureReport;
