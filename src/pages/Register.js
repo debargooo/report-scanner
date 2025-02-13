@@ -77,10 +77,7 @@ const Register = () => {
     <div class=" bg-gray-100 text-gray-900 flex justify-center">
     <div class="max-w-screen-xl m-0 sm:m-10 bg-white shadow sm:rounded-lg flex justify-center flex-1">
         <div class="lg:w-1/2 xl:w-5/12 p-6 sm:p-12">
-            <div>
-                <img src="https://storage.googleapis.com/devitary-image-host.appspot.com/15846435184459982716-LogoMakr_7POjrN.png"
-                    class="w-32 mx-auto" />
-            </div>
+           
             <div class="mt-12 flex flex-col items-center">
                 <h1 class="text-2xl xl:text-3xl font-extrabold">
                     Sign up
@@ -93,14 +90,18 @@ const Register = () => {
                             Or sign up with e-mail
                         </div>
                     </div>
+                    <br/>
 
                     <form onSubmit={handleSubmit} class="mx-auto max-w-xs">
+                    <div>
                     <input onChange={handleChange}
                             class="w-full px-8 py-4 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white"
-                            type="text" placeholder="Name" />
-                        <input onChange={handleChange}
+                            type="text" placeholder="Name" /> </div>
+                            <br/>
+                        <div><input onChange={handleChange}
                             class="w-full px-8 py-4 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white"
-                            type="email" placeholder="Email" />
+                            type="email" placeholder="Email" /></div>
+                        <br/>
                        
             {/* Input Field */}
             <div className="relative" ref={pickerRef}>
@@ -113,7 +114,7 @@ const Register = () => {
 
                     onFocus={() => setIsOpen(true)}
                 />
-
+                <br/>
                 {/* Show DatePicker when isOpen is true */}
                 {isOpen && (
                     <div className="absolute top-full mt-2 w-full bg-white shadow-lg rounded-md z-50">
@@ -147,14 +148,15 @@ const Register = () => {
                              day_hidden: "invisible",
                            }}
                         />
+                        <br/>
                     </div>
+                    
                 )}
 
         </div>
+        <br/>
                        
-                        <input 
-                            class="w-full px-8 py-4 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white"
-                            type="radio" placeholder="Gender" />
+                        
                         <input
                             class="w-full px-8 py-4 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white"
                             type="text" placeholder="Phone Number" />

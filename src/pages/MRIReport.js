@@ -121,7 +121,7 @@ const MRIReport = () => {
         {insights && (
           <div className="mt-8 bg-gray-100 p-6 rounded-lg shadow-lg border border-gray-300">
             <h2 className="text-xl font-semibold text-gray-800 mb-4">Medical Insights</h2>
-            <p className="text-gray-700 text-lg">{insights}</p>
+            <div className="text-gray-700 text-lg" dangerouslySetInnerHTML={{ __html: insights }} />
           </div>
         )}
       </div>
