@@ -1,205 +1,112 @@
-import React from 'react'
-import  { useState, useRef, useEffect } from "react";
+import { useState } from "react";
 
-  import { format } from "date-fns";
-  import { DayPicker } from "react-day-picker";
-  
+export default function RegisterForm() {
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    dob: "",
+    age: "",
+    gender: "",
+    contact: "",
+    password: "",
+    confirmPassword: ""
+  });
+  const [errors, setErrors] = useState({});
+  const [successMessage, setSuccessMessage] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
 
-const Register = () => {
-    const [formData, setFormData] = useState({
-        name: '',
-        email: '',
-        dob: '',
-        age: '',
-        gender: '',
-        contact: '',
-        password: '',
-        confirmPassword: ''
-    });
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+    validateField(name, value);
+  };
 
-    const [isOpen, setIsOpen] = useState(false);
-    const pickerRef = useRef(null);
+  const validateField = (name, value) => {
+    let error = "";
+    if (name === "name" && (!value || value.trim().length < 3)) {
+      error = "Name must be at least 3 characters long.";
+    } else if (name === "email" && (!value || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value))) {
+      error = "Please enter a valid email address.";
+    } else if (name === "password" && (!value || value.length < 8 || !/(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/.test(value))) {
+      error = "Password must be at least 8 characters long, include an uppercase letter, a number, and a special character.";
+    } else if (name === "confirmPassword" && value !== formData.password) {
+      error = "Passwords do not match.";
+    }
+    setErrors((prevErrors) => ({ ...prevErrors, [name]: error }));
+  };
 
-    const [selectedDate, setSelectedDate] = useState(null);
+  const isFormValid = () => {
+    return Object.values(errors).every((error) => !error) &&
+           Object.values(formData).every((value) => value.trim() !== "");
+  };
 
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setFormData({ ...formData, [name]: value });
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setSuccessMessage("");
+    
+    if (!isFormValid()) {
+      return;
+    }
+    
+    try {
+      const response = await fetch("http://127.0.0.1:5000/api/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData)
+      });
 
-        if (name === "dob") {
-            const birthDate = new Date(value);
-            const today = new Date();
-            let age = today.getFullYear() - birthDate.getFullYear();
-            const monthDiff = today.getMonth() - birthDate.getMonth();
-            if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
-                age--;
-            }
-            setFormData(prevState => ({ ...prevState, age: age }));
-        }
-    };
+      const result = await response.json();
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        console.log("Form submitted", formData);
-    };
-
-    const handleDateSelect = (date) => {
-        if (date) {
-            setSelectedDate(date);
-            setIsOpen(false);
-            const formattedDate = format(date, "yyyy-MM-dd");
-            setFormData({ ...formData, dob: formattedDate });
-            
-            const today = new Date();
-            let age = today.getFullYear() - date.getFullYear();
-            const monthDiff = today.getMonth() - date.getMonth();
-            if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < date.getDate())) {
-                age--;
-            }
-            setFormData(prevState => ({ ...prevState, age: age }));
-        }
-    };
-
-   
-
-    const handleClickOutside = (event) => {
-        if (pickerRef.current && !pickerRef.current.contains(event.target)) {
-            setIsOpen(false);
-        }
-    };
-
-    React.useEffect(() => {
-        document.addEventListener("mousedown", handleClickOutside);
-        return () => document.removeEventListener("mousedown", handleClickOutside);
-    }, []);
+      if (response.ok) {
+        setSuccessMessage("Registration successful!");
+        setFormData({ name: "", email: "", dob: "", age: "", gender: "", contact: "", password: "", confirmPassword: "" });
+        setErrors({});
+      } else {
+        setErrors({ form: result.message || "Registration failed." });
+      }
+    } catch (error) {
+      setErrors({ form: "An error occurred. Please try again later." });
+    }
+  };
 
   return (
-    <div class=" bg-gray-100 text-gray-900 flex justify-center">
-    <div class="max-w-screen-xl m-0 sm:m-10 bg-white shadow sm:rounded-lg flex justify-center flex-1">
-        <div class="lg:w-1/2 xl:w-5/12 p-6 sm:p-12">
-           
-            <div class="mt-12 flex flex-col items-center">
-                <h1 class="text-2xl xl:text-3xl font-extrabold">
-                    Sign up
-                </h1>
-                <div class="w-full flex-1 mt-8">
+    <div className="max-w-md mx-auto p-4 border rounded-lg shadow-lg">
+      <h2 className="text-xl font-bold mb-4">Register</h2>
+      {errors.form && <p className="text-red-500 mb-2">{errors.form}</p>}
+      {successMessage && <p className="text-green-500 mb-2">{successMessage}</p>}
+      <form onSubmit={handleSubmit} className="flex flex-col gap-3">
+        <input type="text" name="name" placeholder="Name" value={formData.name} onChange={handleChange} className="p-2 border rounded" />
+        {errors.name && <p className="text-red-500 text-sm">{errors.name}</p>}
 
-                    <div class="my-12 border-b text-center">
-                        <div
-                            class="leading-none px-2 inline-block text-sm text-gray-600 tracking-wide font-medium bg-white transform translate-y-1/2">
-                            Or sign up with e-mail
-                        </div>
-                    </div>
-                    <br/>
+        <input type="email" name="email" placeholder="Email" value={formData.email} onChange={handleChange} className="p-2 border rounded" />
+        {errors.email && <p className="text-red-500 text-sm">{errors.email}</p>}
 
-                    <form onSubmit={handleSubmit} class="mx-auto max-w-xs">
-                    <div>
-                    <input onChange={handleChange}
-                            class="w-full px-8 py-4 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white"
-                            type="text" placeholder="Name" /> </div>
-                            <br/>
-                        <div><input onChange={handleChange}
-                            class="w-full px-8 py-4 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white"
-                            type="email" placeholder="Email" /></div>
-                        <br/>
-                       
-            {/* Input Field */}
-            <div className="relative" ref={pickerRef}>
-                <input
-                    type="text"
-                    placeholder="Select a date"
-                    value={selectedDate ? format(selectedDate, "PPP") : ""}
-                    readOnly
-                    class="w-full px-8 py-4 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white"
-
-                    onFocus={() => setIsOpen(true)}
-                />
-                <br/>
-                {/* Show DatePicker when isOpen is true */}
-                {isOpen && (
-                    <div className="absolute top-full mt-2 w-full bg-white shadow-lg rounded-md z-50">
-                        <DayPicker 
-                           mode="single"
-                           selected={selectedDate}
-                           onSelect={handleDateSelect}
-                           showOutsideDays
-                           className="border-0"
-                           classNames={{
-                             caption: "flex justify-center py-2 mb-4 relative items-center",
-                             caption_label: "text-sm font-medium text-gray-900",
-                             nav: "flex justify-evenly",
-                             nav_button:
-                               "h-6 w-6 bg-transparent hover:bg-blue-gray-50 p-1 rounded-md transition-colors duration-300",
-                             nav_button_previous: "absolute left-1.5",
-                             nav_button_next: "absolute right-1.5",
-                             table: "w-full border-collapse",
-                             head_row: "flex font-medium text-gray-900",
-                             head_cell: "m-0.5 w-9 font-normal text-sm",
-                             row: "flex w-full mt-2",
-                             cell: "text-gray-600 rounded-md h-9 w-9 text-center text-sm p-0 m-0.5 relative [&:has([aria-selected].day-range-end)]:rounded-r-md [&:has([aria-selected].day-outside)]:bg-gray-900/20 [&:has([aria-selected].day-outside)]:text-white [&:has([aria-selected])]:bg-gray-900/50 first:[&:has([aria-selected])]:rounded-l-md last:[&:has([aria-selected])]:rounded-r-md focus-within:relative focus-within:z-20",
-                             day: "h-9 w-9 p-0 font-normal",
-                             day_range_end: "day-range-end",
-                             day_selected:
-                               "rounded-md bg-gray-900 text-white hover:bg-gray-900 hover:text-white focus:bg-gray-900 focus:text-white",
-                             day_today: "rounded-md bg-gray-200 text-gray-900",
-                             day_outside:
-                               "day-outside text-gray-500 opacity-50 aria-selected:bg-gray-500 aria-selected:text-gray-900 aria-selected:bg-opacity-10",
-                             day_disabled: "text-gray-500 opacity-50",
-                             day_hidden: "invisible",
-                           }}
-                        />
-                        <br/>
-                    </div>
-                    
-                )}
-
+        <input type="date" name="dob" value={formData.dob} onChange={handleChange} className="p-2 border rounded" />
+        
+        <input type="number" name="age" placeholder="Age" value={formData.age} onChange={handleChange} className="p-2 border rounded" />
+        
+        <select name="gender" value={formData.gender} onChange={handleChange} className="p-2 border rounded">
+          <option value="">Select Gender</option>
+          <option value="Male">Male</option>
+          <option value="Female">Female</option>
+          <option value="Other">Other</option>
+        </select>
+        
+        <input type="text" name="contact" placeholder="Contact" value={formData.contact} onChange={handleChange} className="p-2 border rounded" />
+        
+        <div className="relative">
+          <input type={showPassword ? "text" : "password"} name="password" placeholder="Password" value={formData.password} onChange={handleChange} className="p-2 border rounded w-full" />
+          <button type="button" className="absolute right-2 top-2 text-sm" onClick={() => setShowPassword(!showPassword)}>
+            {showPassword ? "Hide" : "Show"}
+          </button>
         </div>
-        <br/>
-                       
-                        
-                        <input
-                            class="w-full px-8 py-4 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white"
-                            type="text" placeholder="Phone Number" />
-                        <input
-                            class="w-full px-8 py-4 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white mt-5"
-                            type="password" placeholder="Password" />
-                        <input
-                            class="w-full px-8 py-4 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white mt-5"
-                            type="password" placeholder="Confirm Password" />
-                        <button
-                            class="mt-5 tracking-wide font-semibold bg-indigo-500 text-gray-100 w-full py-4 rounded-lg hover:bg-indigo-700 transition-all duration-300 ease-in-out flex items-center justify-center focus:shadow-outline focus:outline-none">
-                            <svg class="w-6 h-6 -ml-2" fill="none" stroke="currentColor" stroke-width="2"
-                                stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M16 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" />
-                                <circle cx="8.5" cy="7" r="4" />
-                                <path d="M20 8v6M23 11h-6" />
-                            </svg>
-                            <span class="ml-3">
-                                Sign Up
-                            </span>
-                        </button>
-                        <p class="mt-6 text-xs text-gray-600 text-center">
-                            I agree to abide by templatana's
-                            <a href="#" class="border-b border-gray-500 border-dotted">
-                                Terms of Service
-                            </a>
-                            and its
-                            <a href="#" class="border-b border-gray-500 border-dotted">
-                                Privacy Policy
-                            </a>
-                        </p>
-                    </form>
-                </div>
-            </div>
-        </div>
-        <div class="flex-1 bg-indigo-100 text-center hidden lg:flex">
-            <div class="m-12 xl:m-16 w-full bg-contain bg-center bg-no-repeat">
-                <img src='https://storage.googleapis.com/devitary-image-host.appspot.com/15848031292911696601-undraw_designer_life_w96d.svg'/>
-            </div>
-        </div>
+        {errors.password && <p className="text-red-500 text-sm">{errors.password}</p>}
+
+        <input type="password" name="confirmPassword" placeholder="Confirm Password" value={formData.confirmPassword} onChange={handleChange} className="p-2 border rounded" />
+        {errors.confirmPassword && <p className="text-red-500 text-sm">{errors.confirmPassword}</p>}
+
+        <button type="submit" className="p-2 bg-blue-500 text-white rounded" disabled={!isFormValid()}>Register</button>
+      </form>
     </div>
-</div>
-  )
+  );
 }
-
-export default Register

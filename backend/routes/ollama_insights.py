@@ -2,7 +2,7 @@ from flask import Blueprint, jsonify, request
 from ollama import chat, ChatResponse
 
 # Default message template
-default = "in less than 60 words with no bold or italics but in bullets in specific lines"
+default = " in less than 60 words with no bold or italics but in bullets in specific lines"
 
 # Create Blueprint for Skin Cancer Insights
 ollama_skin_cancer_insights = Blueprint('ollama_skin_cancer_insights', __name__)

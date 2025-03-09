@@ -4,6 +4,8 @@ from routes.tumor_detection import tumor_detection_bp
 from routes.fracture_detection import fracture_bp
 from routes.skin_cancer_detection import skin_cancer_classify_bp
 from routes.pneumonia_detection import pneumonia_detection_bp
+from routes.register import auth
+from routes.login import login_user
 from routes.ollama_insights import ollama_skin_cancer_insights, ollama_pneumonia_insights, ollama_fracture_insights, ollama_tumor_insights
 app = Flask(__name__)
 CORS(app)  # Enable CORS
@@ -17,5 +19,7 @@ app.register_blueprint(ollama_skin_cancer_insights)
 app.register_blueprint(ollama_pneumonia_insights)
 app.register_blueprint(ollama_fracture_insights)
 app.register_blueprint(ollama_tumor_insights)
+app.register_blueprint(auth)
+app.register_blueprint(login_user)
 if __name__ == '__main__':
     app.run(debug=True)
