@@ -11,8 +11,8 @@ auth = Blueprint("auth", __name__)
 # Database Connection
 db_config = {
     "host": "localhost",
-    "user": "root",
-    "password": "Moumita#2024",
+    "user": "Sanket",
+    "password": "Sanket7044",
     "database": "medintel"
 }
 
